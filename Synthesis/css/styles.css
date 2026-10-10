@@ -1,0 +1,375 @@
+/* ==========================================================
+   Adaptive Quiz - styles.css
+   Mobile-first: the base styles are for phones, and the
+   @media (min-width: ...) blocks at the bottom enhance them
+   for tablets and desktops.
+   ========================================================== */
+
+/* ---------- 1. Design tokens (CSS custom properties) ---------- */
+:root {
+  --ink: #16213a;
+  --muted: #51607a;
+  --paper: #f2f5fa;
+  --panel: #ffffff;
+  --line: #d3dbe8;
+  --accent: #0b6e6e;
+  --accent-ink: #ffffff;
+  --good: #1f7a43;
+  --bad: #b3261e;
+  --warn: #8a5a00;
+  --focus: #1d4ed8;
+  --code-bg: #0f172a;
+  --code-ink: #e2e8f0;
+  --radius: 10px;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-head: Georgia, "Times New Roman", serif;
+  --font-code: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+/* Follows the device's dark-mode setting automatically */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8eefb;
+    --muted: #a3b0c8;
+    --paper: #0e1526;
+    --panel: #162039;
+    --line: #2a3858;
+    --accent: #4fd1c5;
+    --accent-ink: #06201e;
+    --good: #67d99a;
+    --bad: #ff8a80;
+    --warn: #f5c451;
+    --focus: #8ab4ff;
+    --code-bg: #0a0f1d;
+  }
+}
+
+/* ---------- 2. Reset and base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font: 1rem/1.55 var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+}
+
+h1, h2, h3 { font-family: var(--font-head); line-height: 1.25; margin: 0 0 .6rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.2rem; margin-top: 2rem; }
+p { margin: 0 0 1rem; max-width: 70ch; }
+ul, ol { padding-left: 1.2rem; }
+
+a { color: var(--accent); }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+[tabindex="-1"]:focus { outline: none; }
+
+[hidden] { display: none !important; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: .5rem; top: -4rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: .6rem 1rem;
+  border-radius: var(--radius);
+  z-index: 10;
+}
+.skip-link:focus { top: .5rem; }
+
+/* ---------- 3. Header and navigation ---------- */
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem 1.25rem;
+  padding: .75rem 1rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; align-items: center; gap: .6rem; margin-right: auto; }
+.brand-name { font-family: var(--font-head); font-size: 1.25rem; font-weight: 700; }
+
+/* The logo is a tiny 2x2 heatmap, drawn with CSS grid */
+.logo {
+  display: grid;
+  grid-template-columns: repeat(2, 12px);
+  gap: 3px;
+}
+.logo i { width: 12px; height: 12px; border-radius: 3px; }
+.logo i:nth-child(1) { background: #e57373; }
+.logo i:nth-child(2) { background: #ffd54f; }
+.logo i:nth-child(3), .logo i:nth-child(4) { background: #81c784; }
+
+.nav { display: flex; flex-wrap: wrap; gap: .4rem; }
+.nav button {
+  font: inherit;
+  min-height: 44px;
+  padding: 0 .9rem;
+  color: var(--ink);
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.nav button:hover { border-color: var(--line); }
+.nav button[aria-current="page"] { border-color: var(--accent); font-weight: 600; }
+
+.userbar { display: flex; align-items: center; gap: .6rem; }
+#userName { font-weight: 600; }
+
+/* ---------- 4. Layout ---------- */
+main {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 4rem;
+}
+
+.lead { font-size: 1.1rem; color: var(--muted); }
+.hint { color: var(--muted); font-size: .95rem; }
+.error { color: var(--bad); font-weight: 600; }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  margin: 1rem 0;
+}
+
+/* ---------- 5. Buttons and form controls ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;                 /* comfortable touch target */
+  padding: 0 1.1rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.danger { color: var(--bad); border-color: var(--bad); }
+.btn.small { min-height: 36px; padding: 0 .8rem; font-weight: 500; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+
+label { display: block; font-weight: 600; margin-bottom: .35rem; }
+
+input[type="text"] {
+  width: 100%;
+  min-height: 44px;
+  padding: .5rem .75rem;
+  margin-bottom: 1rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+}
+
+fieldset { border: 0; padding: 0; margin: 0 0 1rem; }
+
+.actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.25rem 0; }
+.file-btn { margin: 0; }
+/* The real file input is visually hidden, so show focus on its label button */
+#fileImport:focus-visible + .file-btn { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ---------- 6. Login ---------- */
+.chip-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* ---------- 7. Dashboard ---------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: .75rem;
+  margin: 1rem 0;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  padding: .9rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.stat-value { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; }
+.stat-label { color: var(--muted); font-size: .9rem; }
+
+/* The heatmap: CSS grid that fits as many columns as the screen allows */
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: .6rem;
+}
+.heat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .15rem;
+  min-height: 112px;
+  padding: .75rem;
+  text-align: left;
+  font: inherit;
+  color: #14213a;                    /* cells are always pastel, so text is always dark */
+  border: 2px solid rgba(20, 33, 58, .25);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.heat-cell:hover { border-color: #14213a; }
+.heat-group { font-size: .8rem; font-weight: 700; }
+.heat-name { font-weight: 700; line-height: 1.25; }
+.heat-meta { font-size: .85rem; margin-top: auto; }
+.heat-status { font-size: .85rem; font-weight: 700; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem 1rem;
+  padding: 0;
+  margin: .75rem 0 0;
+  list-style: none;
+  font-size: .9rem;
+  color: var(--muted);
+}
+.legend li { display: flex; align-items: center; gap: .4rem; }
+.swatch { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--line); }
+
+.resource-list { list-style: none; padding: 0; display: grid; gap: .5rem; }
+.resource-list li {
+  padding: .75rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+/* ---------- 8. Quiz ---------- */
+.quiz-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .6rem; }
+.quiz-label { font-weight: 600; }
+
+progress {
+  width: 100%;
+  height: 12px;
+  accent-color: var(--accent);
+}
+
+.meta { color: var(--muted); font-size: .9rem; margin-bottom: .4rem; }
+#qText { font-size: 1.3rem; }
+
+pre {
+  overflow-x: auto;                  /* long code scrolls inside the box, not the page */
+  margin: 0 0 1rem;
+  padding: .9rem 1rem;
+  color: var(--code-ink);
+  background: var(--code-bg);
+  border-radius: var(--radius);
+  font: .9rem/1.5 var(--font-code);
+}
+pre code { font: inherit; }
+
+.options { display: grid; gap: .6rem; margin-bottom: 1rem; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  min-height: 48px;
+  margin: 0;
+  padding: .7rem .9rem;
+  font-weight: 400;
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.option input { margin-top: .3rem; accent-color: var(--accent); flex: none; }
+.option.selected { border-color: var(--accent); }
+.option.correct { border-color: var(--good); }
+.option.correct::after { content: "\2713  Correct answer"; margin-left: auto; color: var(--good); font-weight: 700; white-space: nowrap; }
+.option.wrong { border-color: var(--bad); }
+.option.wrong::after { content: "\2717  Your answer"; margin-left: auto; color: var(--bad); font-weight: 700; white-space: nowrap; }
+
+.feedback {
+  margin: 1rem 0;
+  padding: .9rem 1rem;
+  border-left: 6px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+.feedback p { margin: .4rem 0 0; }
+.feedback.good { border-left-color: var(--good); }
+.feedback.bad { border-left-color: var(--bad); }
+.feedback.warn { border-left-color: var(--warn); }
+
+/* ---------- 9. Results, tables, history ---------- */
+.big-score { font-family: var(--font-head); font-size: 2.4rem; font-weight: 700; margin-bottom: .5rem; }
+
+.breakdown { list-style: none; padding: 0; display: grid; gap: .5rem; }
+.breakdown li { display: flex; justify-content: space-between; gap: 1rem; padding: .6rem .9rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); }
+caption { text-align: left; padding: .5rem 0; color: var(--muted); }
+th, td { padding: .6rem .8rem; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: .9rem; color: var(--muted); }
+
+.bar-track { height: 10px; min-width: 120px; background: var(--line); border-radius: 5px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--accent); }
+
+.trend { display: flex; align-items: flex-end; gap: 6px; height: 160px; padding: .5rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.trend-bar { flex: 1; min-width: 16px; max-width: 48px; display: flex; align-items: flex-end; justify-content: center; background: var(--accent); border-radius: 4px 4px 0 0; color: var(--accent-ink); font-size: .75rem; font-weight: 700; }
+
+.history { list-style: none; padding: 0; display: grid; gap: .5rem; }
+.history li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; padding: .6rem .9rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+
+/* ---------- 10. Toast and noscript ---------- */
+.toast {
+  position: fixed;
+  left: 50%; bottom: 1.25rem;
+  transform: translateX(-50%);
+  max-width: calc(100% - 2rem);
+  padding: .75rem 1.1rem;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: var(--radius);
+  font-weight: 600;
+  z-index: 20;
+}
+.noscript { padding: 1rem; margin: 1rem; background: #fff3cd; color: #5c4400; border-radius: var(--radius); }
+
+/* ---------- 11. Larger screens ---------- */
+@media (min-width: 700px) {
+  main { padding: 2rem 1.5rem 5rem; }
+  .site-header { padding: .75rem 1.5rem; }
+  h2 { font-size: 2rem; }
+  .card { padding: 1.5rem; }
+  #qText { font-size: 1.5rem; }
+  .heatmap { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+
+/* ---------- 12. Respect users who turn off animation ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+}

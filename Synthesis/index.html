@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Makes the page scale to the device width on phones and tablets -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An adaptive homework and quiz system that finds your weak topics in HTML, CSS and JavaScript and keeps practising them until you master them.">
+  <title>Adaptive Homework &amp; Quiz System</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='14' height='14' x='2' y='2' rx='3' fill='%23e57373'/%3E%3Crect width='14' height='14' x='18' y='2' rx='3' fill='%23ffd54f'/%3E%3Crect width='14' height='14' x='2' y='18' rx='3' fill='%2381c784'/%3E%3Crect width='14' height='14' x='18' y='18' rx='3' fill='%2381c784'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="brand-name">Adaptive Quiz</span>
+    </div>
+
+    <nav id="nav" class="nav" aria-label="Main" hidden>
+      <button type="button" data-view="dashboard">Dashboard</button>
+      <button type="button" data-view="progress">My progress</button>
+      <button type="button" data-view="teacher">Class overview</button>
+    </nav>
+
+    <div id="userbar" class="userbar" hidden>
+      <span id="userName"></span>
+      <button type="button" id="btnSwitch" class="btn small">Switch student</button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- LOGIN -->
+    <section id="view-login" class="view" aria-labelledby="login-title">
+      <h2 id="login-title">Find out what to practise next</h2>
+      <p class="lead">Answer a few questions on HTML, CSS and JavaScript. The app tracks which topics trip you up and keeps serving questions on those until you have them down. Progress is saved in this browser.</p>
+
+      <form id="loginForm" class="card" novalidate>
+        <label for="nameInput">Your name</label>
+        <input id="nameInput" name="name" type="text" maxlength="30" autocomplete="off" required>
+        <p id="loginError" class="error" role="alert" hidden></p>
+        <button type="submit" class="btn primary">Start learning</button>
+      </form>
+
+      <div id="existingUsers" hidden>
+        <h3>Continue as</h3>
+        <ul id="userList" class="chip-list"></ul>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="view" hidden aria-labelledby="greeting">
+      <h2 id="greeting"></h2>
+      <div id="stats" class="stats"></div>
+
+      <div class="actions">
+        <button type="button" id="btnDiagnostic" class="btn primary">Take the diagnostic quiz</button>
+        <button type="button" id="btnPractice" class="btn">Practise my weak topics</button>
+      </div>
+
+      <h3>Topic heatmap</h3>
+      <p class="hint">Green means you are answering correctly, red means you need work. Select a topic to practise only that topic.</p>
+      <div id="heatmap" class="heatmap"></div>
+      <ul class="legend" aria-label="Heatmap legend">
+        <li><span class="swatch" style="background:hsl(215 15% 85%)"></span>Not started</li>
+        <li><span class="swatch" style="background:hsl(0 60% 78%)"></span>Needs work</li>
+        <li><span class="swatch" style="background:hsl(60 60% 78%)"></span>Getting there</li>
+        <li><span class="swatch" style="background:hsl(120 60% 78%)"></span>Strong</li>
+      </ul>
+
+      <h3>Study these next</h3>
+      <ul id="recommend" class="resource-list"></ul>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="view-quiz" class="view" hidden aria-label="Quiz">
+      <div class="quiz-top">
+        <span id="quizLabel" class="quiz-label"></span>
+        <button type="button" id="btnQuit" class="btn small">End session</button>
+      </div>
+      <progress id="quizProgress" max="10" value="0"></progress>
+      <p id="progressText" class="hint"></p>
+
+      <article class="card" id="questionCard">
+        <p id="qMeta" class="meta"></p>
+        <h2 id="qText"></h2>
+        <pre id="qCode" hidden><code></code></pre>
+
+        <form id="answerForm">
+          <fieldset>
+            <legend class="sr-only">Choose one answer</legend>
+            <div id="options" class="options"></div>
+          </fieldset>
+          <button type="submit" id="btnCheck" class="btn primary">Check answer</button>
+        </form>
+
+        <div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div>
+        <button type="button" id="btnNext" class="btn primary" hidden>Next question</button>
+      </article>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="view-results" class="view" hidden aria-labelledby="results-title">
+      <h2 id="results-title">Session complete</h2>
+      <p id="resultScore" class="big-score"></p>
+      <h3>By topic</h3>
+      <ul id="resultBreakdown" class="breakdown"></ul>
+      <h3>Review these</h3>
+      <ul id="resultResources" class="resource-list"></ul>
+      <div class="actions">
+        <button type="button" id="btnAgain" class="btn primary">Practise again</button>
+        <button type="button" id="btnHome" class="btn">Back to dashboard</button>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section id="view-progress" class="view" hidden aria-labelledby="progress-title">
+      <h2 id="progress-title">My progress</h2>
+
+      <h3>Score per session</h3>
+      <div id="trend"></div>
+
+      <h3>Topics</h3>
+      <div id="topicTable" class="table-wrap"></div>
+
+      <h3>Attempt history</h3>
+      <ol id="historyList" class="history"></ol>
+
+      <h3>Backup</h3>
+      <p class="hint">Your data lives in this browser. Export it to keep a copy or move it to another device.</p>
+      <div class="actions">
+        <button type="button" id="btnExport" class="btn">Export progress</button>
+        <input id="fileImport" type="file" accept="application/json,.json" class="sr-only">
+        <label class="btn file-btn" for="fileImport">Import progress</label>
+        <button type="button" id="btnReset" class="btn danger">Reset my progress</button>
+      </div>
+    </section>
+
+    <!-- TEACHER -->
+    <section id="view-teacher" class="view" hidden aria-labelledby="teacher-title">
+      <h2 id="teacher-title">Class overview</h2>
+      <p class="hint">Combines every student profile saved in this browser, so a teacher can see which topics the group struggles with.</p>
+      <h3>Topics, weakest first</h3>
+      <div id="classTopics"></div>
+      <h3>Students</h3>
+      <div id="classStudents" class="table-wrap"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript><p class="noscript">This app needs JavaScript. Please enable it in your browser settings.</p></noscript>
+
+  <!-- Order matters: each file uses what the previous ones define -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
